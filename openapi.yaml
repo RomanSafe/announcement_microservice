@@ -1,0 +1,313 @@
+openapi: 3.0.3
+info:
+  title: Announcement manager
+  description: This is an application which help you manage announcements.
+  termsOfService: https://example.com/terms/
+  contact:
+    name: API Support
+    url: https://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+paths:
+  /list-announcements:
+    get:
+      description: Returns all announcements
+      responses:
+        "200":
+          description: Announcements are listed successfully
+          headers:
+            Access-Control-Allow-Origin:
+              $ref: "#/components/headers/Access-Control-Allow-Origin"
+            Access-Control-Allow-Methods:
+              $ref: "#/components/headers/Access-Control-Allow-Methods"
+            Access-Control-Allow-Headers:
+              $ref: "#/components/headers/Access-Control-Allow-Headers"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnouncementsList"
+              examples:
+                ListOfAnnouncements:
+                  $ref: "#/components/examples/ListOfAnnouncements"
+        "204":
+          $ref: "#/components/responses/NoContent204"
+        "405":
+          $ref: "#/components/responses/MethodNotAllowed405"
+        default:
+          $ref: "#/components/responses/DefaultResponse"
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllAnnouncements.Arn}/invocations"
+        type: aws_proxy
+        credentials: "arn:aws:iam::234723943124:role/apigateway-invoke-lambda-role"
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - CORS
+      responses:
+        "200":
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              $ref: "#/components/headers/Access-Control-Allow-Origin"
+            Access-Control-Allow-Methods:
+              $ref: "#/components/headers/Access-Control-Allow-Methods"
+            Access-Control-Allow-Headers:
+              $ref: "#/components/headers/Access-Control-Allow-Headers"
+          content: { }
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+                method.response.header.Access-Control-Allow-Headers: '''Content-Type'''
+                method.response.header.Access-Control-Allow-Methods: '''*'''
+                method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+  /add-announcement:
+    post:
+      description:  Add a new announcement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAnnouncementItem"
+            example:
+              $ref: "#/components/examples/NewAnnouncement"
+      responses:
+        "201":
+          description: Added a new announcement
+          headers:
+            Access-Control-Allow-Origin:
+              $ref: "#/components/headers/Access-Control-Allow-Origin"
+            Access-Control-Allow-Methods:
+              $ref: "#/components/headers/Access-Control-Allow-Methods"
+            Access-Control-Allow-Headers:
+              $ref: "#/components/headers/Access-Control-Allow-Headers"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Message:
+                    description: Success message.
+                    type: string
+                  Added_item:
+                    description: Atributes of added announcement
+                    type: object
+                    additionalProperties:
+                      $ref: "#/components/schemas/SimpleString"
+                required:
+                  - Message
+                  - Added_item
+              examples:
+                AnnouncementAdded201:
+                  $ref: "#/components/examples/AnnouncementAdded201"
+        "405":
+          $ref: "#/components/responses/MethodNotAllowed405"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType415"
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddAnnouncement.Arn}/invocations"
+        type: aws_proxy
+        credentials: "arn:aws:iam::234723943124:role/apigateway-invoke-lambda-role"
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - CORS
+      responses:
+        "200":
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              $ref: "#/components/headers/Access-Control-Allow-Origin"
+            Access-Control-Allow-Methods:
+              $ref: "#/components/headers/Access-Control-Allow-Methods"
+            Access-Control-Allow-Headers:
+              $ref: "#/components/headers/Access-Control-Allow-Headers"
+          content: { }
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+components:
+  schemas:
+    AnnouncementItem:
+      type: object
+      properties:
+        Title:
+          description: Title of announcement
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/SimpleString"
+        Date-time:
+          description: Timestamp of announcement
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/SimpleString"
+        Description:
+          description: Details about new announcement
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/SimpleString"
+      required:
+        - Title
+        - Date-time
+        - Description
+    SimpleString:
+      type: string
+    AnnouncementsList:
+      type: array
+      items:
+        $ref: "#/components/schemas/AnnouncementItem"
+    NewAnnouncementItem:
+      type: object
+      properties:
+        Title:
+          description: Title of announcement
+          type: string
+        Description:
+          description: Details about new announcement
+          type: string
+      required:
+        - Title
+        - Description
+  responses:
+    DefaultResponse:
+      description: Unexpected error
+      headers:
+        Access-Control-Allow-Origin:
+          $ref: "#/components/headers/Access-Control-Allow-Origin"
+        Access-Control-Allow-Methods:
+          $ref: "#/components/headers/Access-Control-Allow-Methods"
+        Access-Control-Allow-Headers:
+          $ref: "#/components/headers/Access-Control-Allow-Headers"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SimpleString"
+    NoContent204:
+      description: Method Not Allowed
+      headers:
+        Access-Control-Allow-Origin:
+          $ref: "#/components/headers/Access-Control-Allow-Origin"
+        Access-Control-Allow-Methods:
+          $ref: "#/components/headers/Access-Control-Allow-Methods"
+        Access-Control-Allow-Headers:
+          $ref: "#/components/headers/Access-Control-Allow-Headers"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SimpleString"
+    MethodNotAllowed405:
+      description: Method Not Allowed
+      headers:
+        Access-Control-Allow-Origin:
+          $ref: "#/components/headers/Access-Control-Allow-Origin"
+        Access-Control-Allow-Methods:
+          $ref: "#/components/headers/Access-Control-Allow-Methods"
+        Access-Control-Allow-Headers:
+          $ref: "#/components/headers/Access-Control-Allow-Headers"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SimpleString"
+    UnsupportedMediaType415:
+      description: Unsupported Media Type
+      headers:
+        Access-Control-Allow-Origin:
+          $ref: "#/components/headers/Access-Control-Allow-Origin"
+        Access-Control-Allow-Methods:
+          $ref: "#/components/headers/Access-Control-Allow-Methods"
+        Access-Control-Allow-Headers:
+          $ref: "#/components/headers/Access-Control-Allow-Headers"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SimpleString"
+  headers:
+    Access-Control-Allow-Origin:
+      schema:
+        $ref: "#/components/schemas/SimpleString"
+    Access-Control-Allow-Methods:
+      schema:
+        $ref: "#/components/schemas/SimpleString"
+    Access-Control-Allow-Headers:
+      schema:
+        $ref: "#/components/schemas/SimpleString"
+  examples:
+    NewAnnouncement:
+      summary: Request body with new announcement should look like
+      value:
+        Title: An exciting event!
+        Description: Colorful description here
+    AnnouncementAdded201:
+      summary: Response body when new announcement added
+      value:
+        Message: Added a new announcement
+        Added_item:
+          Title: test title
+          Date-time: 2021-09-28T12:39:34.760673+00:00
+          Description: test description
+    SingleAnnouncement:
+      summary: JSON with an announcement should look like
+      value:
+        Title:
+          S: An exciting event!
+        Date-time:
+          S: 2021-09-28T06:47:57.098752+00:00
+        Description:
+          S: Colorful description here
+    ListOfAnnouncements:
+      summary: JSON with list of announcements should look like
+      value: [
+        {
+          "Title": {"S": "Manual test event!"},
+          "Description": {"S": "test"},
+          "Date-time": {"S": "2021-09-28T06:47:57.098752+00:00"}
+        },
+        {
+          "Title": {"S": "test postman"},
+          "Description": {"S": "test postman"},
+          "Date-time": {"S": "2021-09-29T06:47:57.098752+00:00"}
+        },
+        {
+          "Title": {"S": "test short event"},
+          "Description": {"S": "test postman"},
+          "Date-time": {"S": "2021-09-30T06:47:57.098752+00:00"}
+        }
+      ]

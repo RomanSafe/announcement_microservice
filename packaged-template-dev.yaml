@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An app (read/write to DynamoDB) with a RESTful API endpoint using Amazon
+  API Gateway.
+Parameters:
+  Stage:
+    Type: String
+Globals:
+  Api:
+    OpenApiVersion: 3.0.3
+  Function:
+    Runtime: python3.8
+    MemorySize: 512
+    Timeout: 3
+    Environment:
+      Variables:
+        TABLE_NAME:
+          Ref: DynamoDBTable
+Resources:
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RestApi
+      Description: An API for serverless app
+      StageName:
+        Ref: Stage
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: s3://announcement-app/artifacts/dev/73af09e7af5de8df46c3e64b18dd43ad
+  AddAnnouncement:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: AddAnnouncement
+      Handler: lambda_add_item.add_announcement
+      Description: Write to DynamoDB through a RESTful API endpoint using Amazon API
+        Gateway.
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: DynamoDBTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /add-announcement
+            Method: post
+            RestApiId:
+              Ref: RestApi
+      CodeUri: s3://announcement-app/artifacts/dev/2605ad7ec3fc748937145012fcd020e1
+  GetAllAnnouncements:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetAllAnnouncements
+      Handler: lambda_get_all_items.list_announcements
+      Description: Read from DynamoDB through a RESTful API endpoint using Amazon
+        API Gateway.
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: DynamoDBTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /list-announcements
+            Method: get
+            RestApiId:
+              Ref: RestApi
+      CodeUri: s3://announcement-app/artifacts/dev/2605ad7ec3fc748937145012fcd020e1
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: Title
+        AttributeType: S
+      - AttributeName: Date-time
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Title
+        KeyType: HASH
+      - AttributeName: Date-time
+        KeyType: RANGE
+      TableName: announcements
+      BillingMode: PAY_PER_REQUEST
