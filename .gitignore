@@ -139,3 +139,7 @@ cython_debug/
 
 # PyCharm config
 .idea/
+
+# package for stack
+my-deployment-package.zip
+package/
