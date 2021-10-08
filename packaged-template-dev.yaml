@@ -28,7 +28,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://announcement-app/artifacts/dev/73af09e7af5de8df46c3e64b18dd43ad
+            Location: s3://announcement-app/artifacts/dev/e1644cffff5dd1db896313958269c21e
   AddAnnouncement:
     Type: AWS::Serverless::Function
     Properties:
@@ -44,11 +44,11 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /add-announcement
+            Path: /announcements/add
             Method: post
             RestApiId:
               Ref: RestApi
-      CodeUri: s3://announcement-app/artifacts/dev/2605ad7ec3fc748937145012fcd020e1
+      CodeUri: s3://announcement-app/artifacts/dev/977372c0ddcdcbd824b9346f2212b386
   GetAllAnnouncements:
     Type: AWS::Serverless::Function
     Properties:
@@ -64,23 +64,23 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /list-announcements
+            Path: /announcements
             Method: get
             RestApiId:
               Ref: RestApi
-      CodeUri: s3://announcement-app/artifacts/dev/2605ad7ec3fc748937145012fcd020e1
+      CodeUri: s3://announcement-app/artifacts/dev/977372c0ddcdcbd824b9346f2212b386
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-      - AttributeName: Title
+      - AttributeName: title
         AttributeType: S
-      - AttributeName: Date-time
+      - AttributeName: date-time
         AttributeType: S
       KeySchema:
-      - AttributeName: Title
+      - AttributeName: title
         KeyType: HASH
-      - AttributeName: Date-time
+      - AttributeName: date-time
         KeyType: RANGE
       TableName: announcements
       BillingMode: PAY_PER_REQUEST
