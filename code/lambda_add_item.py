@@ -2,9 +2,13 @@ import json
 import logging
 import os
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Union, List, Dict, Any
 
 import boto3
+from botocore.exceptions import BotoCoreError, ClientError
+from pydantic import ValidationError
+
+from models import NewAnnouncement
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -22,53 +26,46 @@ def get_db_table_object():
     return dynamodb.Table(TABLE_NAME)
 
 
-def validate_payload(payload: dict) -> bool:
-    """Validate payload (body of the request).
-
-    :param payload: body of the request;
-    :return: True if payload pass validation, otherwise False.
-    """
-    valid = False
-    if (
-        payload
-        and "Title" in payload
-        and "Description" in payload
-        and len(payload["Title"]) > 3
-        and len(payload["Description"]) > 3
-    ):
-        valid = True
-    return valid
-
-
-def add_item(table_object, payload: dict):
-    """Add a new item to DynamoDB from payload.
-
-    The value of "Date-time" is a timestamp - string representing the current UTC date and time
-    in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.ffffff+HH:MM
+def add_item(table_object, new_announcement: dict) -> tuple:
+    """Add a new announcement to DynamoDB.
 
     :param table_object: DynamoDB table resource object;
-    :param payload: body of the request;
+    :param new_announcement: attributes of new announcement (title and
+    description) to add to DB;
+    :return: tuple with status code, message, and details about added entity
+    or caught error.
     """
-    logging.info("Adding an item to DynamoDB.")
     new_item = {
-        "Title": payload["Title"],
-        "Date-time": datetime.now(timezone.utc).isoformat(timespec="microseconds"),
-        "Description": payload["Description"],
+        "title": new_announcement.get("title"),
+        "description": new_announcement.get("description"),
+        "date-time": datetime.now(timezone.utc).isoformat(timespec="microseconds"),
     }
-    table_object.put_item(Item=new_item)
-    return new_item
+    try:
+        logging.info("Adding an item to DynamoDB.")
+        table_object.put_item(Item=new_item)
+    except ClientError as error:
+        return (
+            error.response["ResponseMetadata"]["HTTPStatusCode"],
+            error.response["Error"]["Code"],
+            error.response["Error"]["Message"],
+        )
+    except BotoCoreError as error:
+        return "400", "Client side error", error
+    else:
+        return "201", "Added a new announcement", new_item
 
 
-def respond(status_code: str, message: str, added_item: Optional[dict] = None) -> dict:
+def respond(status_code: str, message: str, details: Union[dict, str, List[Dict[str, Any]]
+]) -> dict:
     """Return a response with JSON-formatted body.
 
     :param status_code: HTTP status code of the response;
     :param message: message for status code;
-    :param added_item: content of added to DB item;
+    :param details: info about added to DB item or error;
     :return: response with JSON-formatted body.
     """
     logging.info("Sending the respond.")
-    body = {"Message": message, "Added_item": added_item}
+    body = {"message": message, "details": details}
     return {
         "statusCode": status_code,
         "body": json.dumps(body),
@@ -88,22 +85,12 @@ def add_announcement(event, context) -> dict:
     :param context: context of the request
     :return: Return a response with JSON-formatted body.
     """
-    http_method = event["httpMethod"]
-    if http_method == "POST":
-        logging.info("httpMethod match.")
-        payload = event["body"]
-        if isinstance(payload, str):
-            payload = json.loads(payload)
-        if validate_payload(payload):
-            logging.info("Payload is found.")
-            return respond(
-                "201",
-                "Added a new announcement",
-                add_item(get_db_table_object(), payload),
-            )
-        else:
-            return respond("415", "Unsupported Media Type")
-    else:
-        # API Gateway responds: 403 - {"message":"Missing Authentication Token"}
-        # I'l leave it here for future research
-        return respond("405", "Method Not Allowed")
+    payload = event.get("body")
+    if isinstance(payload, str):
+        payload = json.loads(payload)
+    try:
+        new_announcement = NewAnnouncement.parse_obj(payload)
+        logging.info("Payload is found.")
+    except ValidationError as e:
+        return respond("415", "Unsupported Media Type", e.errors())
+    return respond(*add_item(get_db_table_object(), new_announcement.dict()))

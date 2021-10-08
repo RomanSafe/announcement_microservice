@@ -67,7 +67,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"Title\": \"test from postman\", \"Description\": \"test from postman\"}",
+							"raw": "{\"title\": \"test from postman\", \"description\": \"test from postman\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -75,10 +75,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/add-announcement",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements/add",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -86,14 +86,15 @@
 							],
 							"path": [
 								"dev",
-								"add-announcement"
+								"announcements",
+								"add"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Add_empty_attributes",
+					"name": "Add_empty_attributes_415",
 					"protocolProfileBehavior": {
 						"disableUrlEncoding": true,
 						"strictSSL": false,
@@ -151,7 +152,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"Title\": \"\", \"Description\": \"test from postman\"}",
+							"raw": "{\"title\": \"\", \"description\": \"\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -159,10 +160,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/add-announcement",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements/add",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -170,14 +171,15 @@
 							],
 							"path": [
 								"dev",
-								"add-announcement"
+								"announcements",
+								"add"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Lack_of_attributes",
+					"name": "Lack_of_attribute_415",
 					"protocolProfileBehavior": {
 						"disableUrlEncoding": true,
 						"strictSSL": false,
@@ -235,7 +237,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"Description\": \"test from postman\"}",
+							"raw": "{\"description\": \"test from postman\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -243,10 +245,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/add-announcement",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements/add",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -254,22 +256,27 @@
 							],
 							"path": [
 								"dev",
-								"add-announcement"
+								"announcements",
+								"add"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Unsupported_media_type_415",
+					"name": "Luck_of_request_body_415",
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/add-announcement",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements/add",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -277,25 +284,31 @@
 							],
 							"path": [
 								"dev",
-								"add-announcement"
+								"announcements",
+								"add"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Method_not_allowed_405",
+					"name": "Method_not_allowed_403-Forbidden",
 					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
 						"strictSSL": false
 					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/add-announcement",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements/add",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -303,7 +316,8 @@
 							],
 							"path": [
 								"dev",
-								"add-announcement"
+								"announcements",
+								"add"
 							]
 						}
 					},
@@ -315,10 +329,10 @@
 						"method": "OPTIONS",
 						"header": [],
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/add-announcement",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements/add",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -326,7 +340,8 @@
 							],
 							"path": [
 								"dev",
-								"add-announcement"
+								"announcements",
+								"add"
 							]
 						}
 					},
@@ -339,14 +354,21 @@
 			"item": [
 				{
 					"name": "Get_all_announcements",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/list-announcements",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -354,22 +376,29 @@
 							],
 							"path": [
 								"dev",
-								"list-announcements"
+								"announcements"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "No_content_204",
+					"name": "Get_all_announcements_from_next_page",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/list-announcements",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements?title=batch and request numbers: 315, 1&date-time=2021-10-06T06:37:58.793327+00:00&next-page-number=2",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -377,14 +406,28 @@
 							],
 							"path": [
 								"dev",
-								"list-announcements"
+								"announcements"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "batch and request numbers: 315, 1"
+								},
+								{
+									"key": "date-time",
+									"value": "2021-10-06T06:37:58.793327+00:00"
+								},
+								{
+									"key": "next-page-number",
+									"value": "2"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Method_not_allowed_405",
+					"name": "Method_not_allowed_403-Fordibben",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -393,10 +436,10 @@
 							"raw": "test"
 						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/list-announcements",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -404,7 +447,7 @@
 							],
 							"path": [
 								"dev",
-								"list-announcements"
+								"announcements"
 							]
 						}
 					},
@@ -420,10 +463,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://5zy78hv8r7.execute-api.eu-north-1.amazonaws.com/dev/list-announcements",
+							"raw": "https://u57mkyaz6e.execute-api.eu-north-1.amazonaws.com/dev/announcements",
 							"protocol": "https",
 							"host": [
-								"5zy78hv8r7",
+								"u57mkyaz6e",
 								"execute-api",
 								"eu-north-1",
 								"amazonaws",
@@ -431,7 +474,7 @@
 							],
 							"path": [
 								"dev",
-								"list-announcements"
+								"announcements"
 							]
 						}
 					},

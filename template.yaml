@@ -45,12 +45,11 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /add-announcement
+            Path: /announcements/add
             Method: post
             RestApiId:
               Ref: RestApi
-      CodeUri: ./code
-
+      CodeUri: ./my-deployment-package.zip
   GetAllAnnouncements:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -65,24 +64,23 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /list-announcements
+            Path: /announcements
             Method: get
             RestApiId:
               Ref: RestApi
-      CodeUri: ./code
-
+      CodeUri: ./my-deployment-package.zip
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: Title
+        - AttributeName: title
           AttributeType: S
-        - AttributeName: Date-time
+        - AttributeName: date-time
           AttributeType: S
       KeySchema:
-        - AttributeName: Title
+        - AttributeName: title
           KeyType: HASH
-        - AttributeName: Date-time
+        - AttributeName: date-time
           KeyType: RANGE
       TableName: announcements
       BillingMode: PAY_PER_REQUEST

@@ -11,7 +11,9 @@ STAGE=$1
 APP_NAME="announcement-app"
 REGION="eu-north-1"
 
-#aws s3 mb "s3://${APP_NAME}"
+cd ./code
+zip -g ../my-deployment-package.zip ./lambda_add_item.py ./lambda_get_all_items.py ./models.py
+cd ..
 
 aws cloudformation package \
 --template-file ./template.yaml \
