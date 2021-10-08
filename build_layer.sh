@@ -1,5 +1,4 @@
-#!/bin/bash
-set -eo pipefail
+#!/bin/bash -ex
 rm -rf package
 pip install --target ./package -r requirements.txt
 cd package

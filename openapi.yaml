@@ -115,8 +115,6 @@ paths:
           $ref: "#/components/responses/AddItemResponse"
         default:
           $ref: "#/components/responses/AddItemResponse"
-      security:
-        - CognitoUserPool: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddAnnouncement.Arn}/invocations"
@@ -353,12 +351,3 @@ components:
           "date-time": {"S": "2021-09-30T06:47:57.098752+00:00"}
         }
       ]
-  securitySchemes:
-    CognitoUserPool:
-      type: apiKey
-      name: Authorization
-      in: header
-      x-amazon-apigateway-authtype: cognito_user_pools,
-      x-amazon-apigateway-authorizer:
-        type: cognito_user_pools,
-        providerARNs: "arn:aws:cognito-idp:${AWS::Region}:234723943124:userpool/${CognitoUserPool.id}"
