@@ -26,6 +26,8 @@ Resources:
       Description: An API for serverless app
       StageName:
         Ref: Stage
+      Auth:
+        DefaultAuthorizer: AWS_IAM
       DefinitionBody:
         'Fn::Transform':
           Name: 'AWS::Include'
