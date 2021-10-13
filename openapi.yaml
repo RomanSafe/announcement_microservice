@@ -28,7 +28,8 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllAnnouncements.Arn}/invocations"
         type: aws_proxy
-        credentials: "arn:aws:iam::234723943124:role/apigateway-invoke-lambda-role"
+        credentials:
+          Fn::Sub: "arn:aws:iam::${AWS::AccountId}:role/apigateway-invoke-lambda-role"
         contentHandling: CONVERT_TO_TEXT
         httpMethod: POST
       parameters:
@@ -119,7 +120,8 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddAnnouncement.Arn}/invocations"
         type: aws_proxy
-        credentials: "arn:aws:iam::234723943124:role/apigateway-invoke-lambda-role"
+        credentials:
+          Fn::Sub: "arn:aws:iam::${AWS::AccountId}:role/apigateway-invoke-lambda-role"
         contentHandling: CONVERT_TO_TEXT
         httpMethod: POST
     options:

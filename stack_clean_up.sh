@@ -14,4 +14,4 @@ BUCKET_NAME=$2
 aws cloudformation delete-stack --stack-name "${STACK_NAME}"
 aws cloudformation wait stack-delete-complete \
 --stack-name "${STACK_NAME}"
-#aws s3 rb --force "s3://${BUCKET_NAME}"
+aws s3 rb --force "s3://${BUCKET_NAME}"
