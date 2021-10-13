@@ -26,13 +26,12 @@ Resources:
       Description: An API for serverless app
       StageName:
         Ref: Stage
-      Auth:
-        DefaultAuthorizer: AWS_IAM
       DefinitionBody:
         'Fn::Transform':
           Name: 'AWS::Include'
           Parameters:
             Location: ./openapi.yaml
+
   AddAnnouncement:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -51,7 +50,19 @@ Resources:
             Method: post
             RestApiId:
               Ref: RestApi
+            Auth:
+              Authorizer: AWS_IAM
+              ResourcePolicy:
+                CustomStatements:
+                  - Effect: Allow
+                    Principal:
+                      AWS:
+                        - 'arn:aws:iam::234723943124:user/lambda-user'
+                    Action: execute-api:Invoke
+                    Resource:
+                      Fn::Sub: 'execute-api:/${Stage}/POST/announcements/add'
       CodeUri: ./my-deployment-package.zip
+
   GetAllAnnouncements:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -70,7 +81,8 @@ Resources:
             Method: get
             RestApiId:
               Ref: RestApi
-      CodeUri: ./my-deployment-package.zip
+m      CodeUri: ./my-deployment-package.zip
+
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:

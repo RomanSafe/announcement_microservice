@@ -28,7 +28,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://announcement-app/artifacts/dev/e1644cffff5dd1db896313958269c21e
+            Location: s3://announcement-app/artifacts/dev/1c6598cd042ea259c64a04486075ad65
   AddAnnouncement:
     Type: AWS::Serverless::Function
     Properties:
@@ -48,7 +48,18 @@ Resources:
             Method: post
             RestApiId:
               Ref: RestApi
-      CodeUri: s3://announcement-app/artifacts/dev/ef4456e6bac87d27f23dedc18ded7d61
+            Auth:
+              Authorizer: AWS_IAM
+              ResourcePolicy:
+                CustomStatements:
+                - Effect: Allow
+                  Principal:
+                    AWS:
+                    - arn:aws:iam::234723943124:user/lambda-user
+                  Action: execute-api:Invoke
+                  Resource:
+                    Fn::Sub: execute-api:/${Stage}/POST/announcements/add
+      CodeUri: s3://announcement-app/artifacts/dev/c6f3113be2534dd04b7858a6c39fa586
   GetAllAnnouncements:
     Type: AWS::Serverless::Function
     Properties:
@@ -68,7 +79,7 @@ Resources:
             Method: get
             RestApiId:
               Ref: RestApi
-      CodeUri: s3://announcement-app/artifacts/dev/ef4456e6bac87d27f23dedc18ded7d61
+      CodeUri: s3://announcement-app/artifacts/dev/c6f3113be2534dd04b7858a6c39fa586
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
